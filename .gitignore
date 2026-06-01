@@ -1,0 +1,13 @@
+# Keep original full-res media + source content OUT of the public repo.
+# Only the curated/compressed site/assets get published.
+media/
+*.docx
+*Zone.Identifier
+
+# Local build / test artifacts
+mock-site.zip
+__pycache__/
+.playwright-mcp/
+mediaenv/
+/*.jpeg
+/*.jpg
