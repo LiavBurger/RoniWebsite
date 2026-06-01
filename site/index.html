@@ -185,7 +185,6 @@ footer a{color:var(--gold-lt);text-decoration:none}
 
 <!-- HERO -->
 <section id="hero">
-  <div class="badge">🍺 מבשלת החברים מהבית · EST. 2026</div>
   <h1 class="hero-title">האתר המתחרה<br>של ה<em>חברים מהבית</em></h1>
   <div class="rule">🌿 ◆ 🍺</div>
   <p class="hero-sub label" style="display:inline-block">״בטח חבר׳ה, הנה אתר מתחרה ומביך לכבוד החתונה של רוני, בדיוק כמו שביקשתם״ – קלוד</p>
@@ -278,7 +277,7 @@ footer a{color:var(--gold-lt);text-decoration:none}
     <h2 class="sec-title" style="color:var(--cream2)">לא רק לכלה ולחתן מותר</h2>
     <p class="hero-sub label reveal" style="display:block;max-width:520px;margin:0 auto;font-style:normal">לכבוד הערב המרגש החלטנו שגם לחברים מהבית מגיעה בירה. אז הרשו לנו להגיש:</p>
     <div class="beer-card label reveal">
-      <div class="exhibit-tab">🍺 מבשלת החברים מהבית · מהדורה מוגבלת</div>
+      <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
       <div class="beer-img-wrap" id="beerTap">
         <img id="beerImg" src="assets/beer-roni.jpg" alt="רוני 0%">
         <span class="beer-tap">לחצו עליי להחלפת תמונה 🍺</span>
@@ -339,8 +338,7 @@ const STICKERS=['אלוף 🏆','החתן','0% רווקות','לחיים 🍻','
    t.onclick=()=>openLB('video',v.src);grid.appendChild(t);});
  GALLERY.forEach((g,i)=>{const t=document.createElement('div');t.className='tile';
    t.style.transform='rotate('+((i%5-2)*1.1)+'deg)';
-   let s=(i%4===0)?'<span class="sticker">'+STICKERS[i%STICKERS.length]+'</span>':'';
-   t.innerHTML='<img style="aspect-ratio:'+g.w+'/'+g.h+'" loading="lazy" src="'+g.s+'" alt="רוני">'+s;
+   t.innerHTML='<img style="aspect-ratio:'+g.w+'/'+g.h+'" loading="lazy" src="'+g.s+'" alt="רוני">';
    t.onclick=()=>openLB('img',g.s);grid.appendChild(t);});})();
 
 /* lightbox */
