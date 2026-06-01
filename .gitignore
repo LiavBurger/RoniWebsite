@@ -11,3 +11,4 @@ __pycache__/
 mediaenv/
 /*.jpeg
 /*.jpg
+/roni-qr.*

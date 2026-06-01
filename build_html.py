@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 """Generate site/index.html from manifest.json. Re-run after build_media.py.
     python3 build_html.py
-Theme: detective EVIDENCE BOARD (cork + pins + red string + stamps + transcript).
+Theme: CRAFT BREWERY beer-label — dark woodgrain bar + cream vintage-label cards, refined serif + gold rules.
 """
 import json, os
+from PIL import Image
 ROOT = os.path.dirname(os.path.abspath(__file__))
 m = json.load(open(os.path.join(ROOT, "site", "manifest.json"), encoding="utf-8"))
-GAL  = json.dumps(m["gallery"], ensure_ascii=False)
+
+def _dims(rel):
+    """Real (w,h) of a built asset, so gallery tiles reserve space and don't reflow while scrolling."""
+    try:
+        with Image.open(os.path.join(ROOT, "site", rel)) as im:
+            return im.size
+    except Exception:
+        return (3, 4)
+
+gallery_obj = [{"s": s, "w": w, "h": h} for s in m["gallery"] for (w, h) in [_dims(s)]]
+videos_obj  = [dict(v, w=_dims(v["poster"])[0], h=_dims(v["poster"])[1]) for v in m["videos"]]
+GAL  = json.dumps(gallery_obj, ensure_ascii=False)
 BEER = json.dumps(m["beer_cycle"], ensure_ascii=False)
-VIDS = json.dumps(m["videos"], ensure_ascii=False)
+VIDS = json.dumps(videos_obj, ensure_ascii=False)
 REAL = "https://berco-roni.github.io/wedding-event/"
 
 HTML = r"""<!DOCTYPE html>
@@ -17,189 +29,159 @@ HTML = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>%F0%9F%94%8D</text></svg>">
-<title>תיק חקירה: רוני | האתר המתחרה של המלווים</title>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>%F0%9F%8D%BA</text></svg>">
+<title>רוני ועופרי | האתר המתחרה של החברים מהבית</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cork:#c8a06a; --cork-d:#9c7440; --wall:#b98f57;
-  --paper:#f6efdd; --paper2:#fbf6ea; --line:#e0d4b4;
-  --ink:#2b2620; --muted:#6b5d49; --red:#c0271e; --red-d:#8e1812; --blue:#2b5fa6; --gold:#d99a2b;
-  --doc:'Frank Ruhl Libre',serif; --mono:'Courier New',monospace; --sans:'Noto Sans Hebrew',sans-serif;
+  --wood:#241a10; --wood2:#1b1209;
+  --cream:#f3e7c9; --cream2:#f9f1db; --ink:#2c1d0d; --ink2:#5d4526;
+  --amber:#c8861a; --gold:#b07d28; --gold-lt:#e3b85e; --brown:#5e3717; --muted:#cdb083;
+  --serif:'Frank Ruhl Libre',serif; --sans:'Heebo',sans-serif;
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);color:var(--ink);overflow-x:hidden;font-weight:400;
-  background-color:var(--cork);
+[id]{scroll-margin-top:84px}            /* keep nav from covering anchored sections */
+body{font-family:var(--sans);color:var(--cream);background-color:var(--wood);overflow-x:hidden;font-weight:400;
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(110,72,34,.20) 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 48% 62%, rgba(110,72,34,.15) 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 76% 33%, rgba(80,52,24,.18) 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 88% 82%, rgba(110,72,34,.13) 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 30% 88%, rgba(80,52,24,.15) 0 1.5px, transparent 2.5px);
-  background-size:23px 23px,31px 29px,19px 25px,27px 22px,21px 26px;}
+    radial-gradient(ellipse 85% 55% at 50% -8%, rgba(200,134,26,.22), transparent 60%),
+    repeating-linear-gradient(91deg, rgba(0,0,0,.24) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(89deg, rgba(255,222,160,.022) 0 1px, transparent 1px 11px),
+    linear-gradient(180deg,#2a1d10,#170f07);
+  background-attachment:fixed}
 
-/* floating + confetti layers */
+/* floating + confetti */
 #floaties{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-.floaty{position:absolute;font-size:1.5rem;opacity:.14;animation:rise linear infinite}
+.floaty{position:absolute;font-size:1.5rem;opacity:.12;animation:rise linear infinite}
 @keyframes rise{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(360deg)}}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:9999}
-.conf{position:absolute;font-size:1.5rem;will-change:transform,opacity}
+.conf{position:absolute;font-size:1.4rem;will-change:transform,opacity}
 
-/* pushpin (shared) */
-.pin{position:relative}
-.pin::before{content:'';position:absolute;top:-9px;inset-inline-start:50%;transform:translateX(50%);
-  width:20px;height:20px;border-radius:50%;z-index:6;
-  background:radial-gradient(circle at 35% 28%, #ff7a6e, var(--red) 58%, var(--red-d));
-  box-shadow:0 4px 6px rgba(0,0,0,.45), inset 0 -3px 4px rgba(0,0,0,.3);}
-.pin.blue::before{background:radial-gradient(circle at 35% 28%, #7fb0ee, var(--blue) 58%, #163a6b)}
-
-/* tape strip */
-.tape::after{content:'';position:absolute;top:-10px;inset-inline-start:18%;width:64px;height:24px;
-  background:rgba(226,214,170,.55);box-shadow:0 1px 2px rgba(0,0,0,.18);transform:rotate(-6deg);z-index:6}
-
-/* NAV — case-file folder tabs */
+/* NAV — brass bar rail */
 nav{position:fixed;top:0;inset-inline:0;z-index:100;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;
-  padding:.6rem 1rem;background:#3a2e1f;box-shadow:0 3px 14px rgba(0,0,0,.4);border-bottom:2px solid var(--red)}
-nav a{font-family:var(--mono);font-weight:700;font-size:.8rem;letter-spacing:.02em;text-decoration:none;
-  color:var(--ink);background:var(--paper);padding:.4rem .8rem;border-radius:6px 6px 2px 2px;
-  border-top:2px solid var(--red);transition:transform .15s,background .2s}
-nav a:hover{transform:translateY(-2px);background:#fff}
-nav a.real{background:var(--gold);color:#3a2e00;border-top-color:#3a2e00}
+  padding:.7rem 1rem;background:rgba(23,15,7,.92);backdrop-filter:blur(8px);border-bottom:2px solid var(--gold)}
+nav a{font-family:var(--serif);font-weight:700;font-size:.86rem;text-decoration:none;color:var(--cream);
+  padding:.3rem .8rem;border-radius:4px;transition:.2s}
+nav a:hover{color:var(--gold-lt)}
+nav a.real{color:#241a10;background:var(--gold-lt);font-weight:700}
+nav a.real:hover{background:#f0cd80}
 
-/* paper card */
-.paper{background:var(--paper);box-shadow:0 14px 34px rgba(0,0,0,.3);border-radius:3px;
-  background-image:linear-gradient(0deg,rgba(0,0,0,.015),transparent)}
+/* shared label-card on the wood */
+.label{background:var(--cream);color:var(--ink);border-radius:5px;position:relative;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+  border:1px solid #d8c49a;background-image:linear-gradient(0deg,rgba(94,55,23,.04),transparent)}
+.label::after{content:'';position:absolute;inset:7px;border:1.5px solid var(--gold);border-radius:3px;pointer-events:none;opacity:.55}
+.kicker{font-family:var(--serif);font-weight:700;letter-spacing:.32em;font-size:.72rem;color:var(--amber);text-transform:uppercase}
 
 /* HERO */
-#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
   padding:6rem 1.1rem 4rem;position:relative;z-index:2}
-.case{max-width:480px;width:100%;padding:2.4rem 1.6rem 2rem;text-align:center;transform:rotate(-1deg);
-  border:1px solid #d8cba6;position:relative}
-.case::after{content:'';position:absolute;inset:0;border:1px dashed rgba(43,38,32,.18);margin:7px;pointer-events:none}
-.stamp-top{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.08em;
-  color:var(--red);border:2px solid var(--red);border-radius:4px;padding:.25rem .7rem;transform:rotate(-2deg);
-  margin-bottom:1rem;opacity:.9}
-.case-no{font-family:var(--mono);font-size:.74rem;color:var(--muted);letter-spacing:.06em;margin-bottom:.8rem}
-.hero-title{font-family:var(--doc);font-size:clamp(2.3rem,8.5vw,4.4rem);font-weight:900;line-height:1.04;color:var(--ink)}
-.hero-title .x{color:var(--red)}
-.guilty{position:absolute;top:14px;inset-inline-end:-6px;font-family:var(--mono);font-weight:700;color:var(--red);
-  border:3px double var(--red);border-radius:6px;padding:.2rem .6rem;font-size:1rem;transform:rotate(11deg);opacity:.85}
-.testimony{font-family:var(--doc);font-style:italic;font-size:1rem;line-height:1.6;color:#403930;margin:1.3rem auto 0;
-  max-width:400px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.9rem 0}
-.testimony span{display:block;font-family:var(--mono);font-style:normal;font-size:.72rem;color:var(--muted);margin-top:.4rem}
-.charge{margin-top:1.6rem;border:2px solid var(--ink);border-radius:4px;padding:.9rem 1rem;background:#fffdf6}
-.charge-l{font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.04em;color:var(--ink)}
-.charge-n{font-family:var(--doc);font-size:clamp(3rem,15vw,5rem);font-weight:900;line-height:1;color:var(--red)}
-.charge-u{font-size:.92rem;font-weight:600;color:var(--muted)}
-.hero-btns{display:flex;flex-direction:column;gap:.8rem;width:100%;max-width:380px;margin-top:1.8rem}
-.btn{display:block;padding:1rem 1.3rem;border-radius:5px;text-decoration:none;font-size:1.02rem;font-weight:700;
-  transition:transform .2s,box-shadow .2s;font-family:var(--sans);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.badge{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.82rem;letter-spacing:.12em;color:var(--cream);
+  border:1px solid var(--gold);border-radius:3px;padding:.4rem 1rem;margin-bottom:1.6rem;background:rgba(176,125,40,.12)}
+.hero-title{font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,10vw,5rem);line-height:1.04;color:var(--cream2);
+  text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.hero-title em{font-style:normal;color:var(--gold-lt)}
+.rule{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:1.2rem auto;max-width:340px;color:var(--gold)}
+.rule::before,.rule::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.hero-sub{margin:0 auto;max-width:430px;font-family:var(--serif);font-style:italic;font-size:1.05rem;line-height:1.6;
+  color:var(--ink);padding:1rem 1.2rem}
+.counter-wrap{margin:2rem auto 1.6rem;max-width:340px;padding:1.4rem 1.6rem;text-align:center}
+.counter-l{font-family:var(--serif);font-weight:700;font-size:.95rem;color:var(--ink2)}
+.counter-n{font-family:var(--serif);font-weight:900;font-size:clamp(3.4rem,16vw,5.6rem);line-height:1;color:var(--brown)}
+.counter-u{font-family:var(--serif);font-weight:700;font-size:1.05rem;color:var(--amber)}
+.hero-btns{display:flex;flex-direction:column;gap:.8rem;width:100%;max-width:380px;margin-top:.4rem}
+.btn{display:block;padding:1rem 1.3rem;border-radius:5px;text-decoration:none;font-family:var(--serif);font-size:1.08rem;font-weight:700;
+  transition:transform .2s,box-shadow .2s;box-shadow:0 8px 22px rgba(0,0,0,.4)}
 .btn:hover{transform:translateY(-3px)}
-.btn small{display:block;font-family:var(--mono);font-size:.68rem;font-weight:400;opacity:.85;margin-top:.15rem}
-.btn-1{background:var(--red);color:#fff}
-.btn-2{background:var(--ink);color:var(--paper)}
-.btn-real{background:var(--paper);color:var(--red);border:2px dashed var(--red)}
-.scroll-hint{margin-top:2rem;font-family:var(--mono);color:#3a2e1f;font-weight:700;font-size:.85rem;animation:bounce 1.6s infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.btn small{display:block;font-family:var(--sans);font-size:.7rem;font-weight:400;opacity:.85;margin-top:.18rem}
+.btn-1{background:linear-gradient(180deg,var(--gold-lt),var(--amber));color:#2b1a02}
+.btn-2{background:var(--brown);color:var(--cream)}
+.btn-real{background:transparent;color:var(--gold-lt);border:2px solid var(--gold)}
+.btn-real em{color:var(--cream);font-style:normal}
 
 /* sections */
 section,.band{position:relative;z-index:2}
 .wrap{max-width:680px;margin:0 auto;padding:4rem 1.1rem}
-.report{padding:2rem 1.5rem;margin-bottom:1.6rem;transform:rotate(.5deg)}
-.report:nth-of-type(even){transform:rotate(-.6deg)}
-.sec-tag{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.72rem;letter-spacing:.12em;
-  color:#fff;background:var(--red);padding:.3rem .8rem;border-radius:3px;transform:rotate(-2deg);margin-bottom:1rem}
-.sec-title{font-family:var(--doc);font-size:clamp(1.8rem,6vw,2.8rem);font-weight:900;color:var(--ink);line-height:1.15;margin-bottom:1.4rem}
-.lead{font-size:1.04rem;line-height:1.95;color:#37312a}
+.report{padding:2.2rem 1.6rem;margin-bottom:1.7rem}
+.sec-tag{display:inline-block;font-family:var(--serif);font-weight:700;font-size:.74rem;letter-spacing:.14em;
+  color:var(--cream);background:var(--brown);padding:.32rem .85rem;border-radius:3px;margin-bottom:1rem;text-transform:uppercase}
+.sec-title{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,6.5vw,3rem);line-height:1.12;color:var(--ink);
+  margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:2px solid var(--gold);display:inline-block}
+.lead{font-size:1.05rem;line-height:1.95;color:#3a2a16}
 .lead p+p{margin-top:1.05em}
-.lead a{color:var(--red);font-weight:700}
+.lead a{color:var(--brown);font-weight:700}
 .lead b{color:var(--ink)}
 
-/* CHAT — real WhatsApp look, pinned as a screenshot exhibit on the board */
-.chat{max-width:390px;margin:0 auto 1.8rem;position:relative;transform:rotate(-1.5deg)}
-.wa{background:#ECE5DD;border-radius:14px;overflow:hidden;box-shadow:0 16px 42px rgba(0,0,0,.4);border:6px solid #fff}
+/* CHAT — real WhatsApp (kept), framed as a phone screenshot on the bar */
+.chat{max-width:390px;margin:1rem auto 1.8rem;position:relative;transform:rotate(-1.5deg)}
+.wa{background:#ECE5DD;border-radius:16px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.6);border:6px solid #fbf6ea}
 .wa-head{display:flex;align-items:center;gap:.55rem;background:#075E54;color:#fff;padding:.6rem .8rem}
 .wa-back{font-size:1.5rem;line-height:1;opacity:.9}
 .wa-av{width:38px;height:38px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
-.wa-name{font-family:var(--sans);font-weight:700;font-size:.98rem;line-height:1.2;display:flex;flex-direction:column}
+.wa-name{font-weight:700;font-size:.98rem;line-height:1.2;display:flex;flex-direction:column;color:#fff}
 .wa-name small{font-weight:400;font-size:.72rem;opacity:.82}
 .wa-body{padding:.9rem .8rem;display:flex;flex-direction:column;gap:.4rem;background-color:#ECE5DD;
   background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:18px 18px}
-.b{max-width:84%;padding:.42rem .7rem .5rem;border-radius:10px;font-family:var(--sans);font-size:.92rem;line-height:1.45;
-  color:#111;box-shadow:0 1px .5px rgba(0,0,0,.13);position:relative}
+.b{max-width:84%;padding:.42rem .7rem .5rem;border-radius:10px;font-size:.92rem;line-height:1.45;color:#111;
+  box-shadow:0 1px .5px rgba(0,0,0,.13);position:relative}
 .b .who{display:block;font-size:.74rem;font-weight:700;margin-bottom:.05rem;color:#d9534f}
 .b .t{display:block;text-align:left;font-size:.62rem;color:#667781;margin-top:.12rem}
 .b.them{background:#fff;align-self:flex-start;border-top-right-radius:2px}
 .b.us{background:#dcf8c6;align-self:flex-end;border-top-left-radius:2px}
 .b.us .who{color:#1f7a5a}
 
-/* EVIDENCE photo (polaroid pinned + red string) */
-.evidence{margin:2.2rem auto;max-width:400px;background:#fff;padding:.7rem .7rem 2.5rem;border-radius:3px;
-  box-shadow:0 14px 34px rgba(0,0,0,.32);transform:rotate(-2.5deg);position:relative}
+/* PHOTO — cream-framed bar prints */
+.evidence{margin:2.2rem auto;max-width:400px;background:var(--cream2);padding:.7rem .7rem 2.4rem;border-radius:3px;
+  box-shadow:0 16px 42px rgba(0,0,0,.6);transform:rotate(-2.5deg);position:relative;border:1px solid #d8c49a}
 .evidence:nth-of-type(even){transform:rotate(2deg)}
-.evidence img{width:100%;border-radius:2px;display:block;filter:saturate(.96)}
-.evidence .cap{position:absolute;bottom:.6rem;inset-inline:0;text-align:center;font-family:var(--mono);font-weight:700;color:#333;font-size:.85rem}
-.evidence::after{content:'';position:absolute;top:-46px;inset-inline-start:50%;width:2px;height:48px;
-  background:var(--red);transform:rotate(18deg);transform-origin:bottom;opacity:.7;z-index:1}
-.stamp{position:absolute;top:-16px;inset-inline-start:-10px;font-family:var(--mono);background:transparent;color:var(--red);
-  font-weight:700;font-size:.92rem;padding:.3rem .6rem;border:3px double var(--red);border-radius:6px;
-  transform:rotate(-13deg);z-index:7;background-color:rgba(255,253,246,.82)}
+.evidence img{width:100%;border-radius:1px;display:block}
+.evidence .cap{position:absolute;bottom:.55rem;inset-inline:0;text-align:center;font-family:var(--serif);font-weight:700;color:#3a2a16;font-size:.92rem}
+.stamp{position:absolute;top:-13px;inset-inline-start:-8px;font-family:var(--serif);font-weight:700;font-size:.82rem;color:#2b1a02;
+  background:linear-gradient(180deg,var(--gold-lt),var(--amber));padding:.28rem .7rem;border-radius:4px;transform:rotate(-9deg);
+  box-shadow:0 6px 14px rgba(0,0,0,.45);z-index:7}
 
-/* BEER exhibit */
+/* BEER — the bottle label */
 .band.beer .wrap{text-align:center}
-.beer-card{max-width:360px;margin:2rem auto 0;background:var(--paper2);border-radius:4px;overflow:hidden;
-  box-shadow:0 18px 46px rgba(0,0,0,.34);border:2px solid var(--ink);transform:rotate(-1deg);position:relative}
-.exhibit-tab{font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.08em;background:var(--ink);
-  color:var(--paper);padding:.45rem 1rem;text-align:center}
-.beer-img-wrap{position:relative;background:repeating-linear-gradient(45deg,#f1e8cf 0 12px,#ece2c4 12px 24px);
-  display:flex;align-items:center;justify-content:center;padding:1.6rem;cursor:pointer}
-.beer-img-wrap img{width:100%;max-width:230px;height:300px;object-fit:contain;transition:transform .25s;
-  box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.beer-card{max-width:360px;margin:2rem auto 0;border-radius:6px;overflow:hidden;border:1px solid #d8c49a;
+  box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.exhibit-tab{font-family:var(--serif);font-weight:700;font-size:.82rem;letter-spacing:.06em;background:var(--brown);color:var(--cream);padding:.55rem 1rem;text-align:center}
+.beer-img-wrap{position:relative;background:radial-gradient(circle at 50% 28%,rgba(200,134,26,.22),transparent 62%),var(--cream2);
+  display:flex;align-items:center;justify-content:center;padding:1.7rem;cursor:pointer}
+.beer-img-wrap img{width:100%;max-width:230px;height:300px;object-fit:contain;transition:transform .25s;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4))}
 .beer-img-wrap:active img{transform:scale(.97)}
-.beer-tap{position:absolute;bottom:.5rem;inset-inline:0;text-align:center;font-family:var(--mono);font-size:.76rem;font-weight:700;color:var(--red)}
-.beer-info{padding:1.4rem;text-align:right}
-.beer-name{font-family:var(--doc);font-size:1.9rem;font-weight:900;color:var(--ink)}
-.beer-row{display:flex;gap:.6rem;align-items:center;margin:.4rem 0 1rem}
-.beer-style{font-family:var(--mono);font-size:.74rem;font-weight:700;letter-spacing:.04em;color:var(--red)}
-.beer-abv{font-family:var(--mono);font-size:.78rem;background:var(--ink);color:var(--paper);font-weight:700;padding:.1rem .6rem;border-radius:3px}
-.beer-d{display:flex;gap:.5rem;font-size:.9rem;line-height:1.5;margin-bottom:.5rem;border-top:1px dashed #d8cba6;padding-top:.5rem}
-.beer-d b{min-width:3rem;font-family:var(--mono);color:var(--red)}
-.beer-desc{margin-top:1rem;font-size:.9rem;line-height:1.8;color:#4a4236;background:#fffdf6;padding:.8rem;border-radius:4px;border:1px dashed #d8cba6}
+.beer-tap{position:absolute;bottom:.5rem;inset-inline:0;text-align:center;font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--brown)}
+.beer-info{padding:1.5rem;text-align:right;background:var(--cream)}
+.beer-name{font-family:var(--serif);font-weight:900;font-size:2rem;color:var(--ink);border-bottom:2px solid var(--gold);padding-bottom:.4rem;display:inline-block}
+.beer-row{display:flex;gap:.6rem;align-items:center;margin:.7rem 0 1rem}
+.beer-style{font-family:var(--serif);font-size:.78rem;font-weight:700;color:var(--brown)}
+.beer-abv{font-family:var(--serif);font-size:.8rem;background:var(--amber);color:#2b1a02;font-weight:700;padding:.12rem .6rem;border-radius:999px}
+.beer-d{display:flex;gap:.5rem;font-size:.9rem;line-height:1.5;margin-bottom:.5rem;border-top:1px dashed #cdb88c;padding-top:.5rem;color:#43331c}
+.beer-d b{min-width:3rem;font-family:var(--serif);color:var(--brown)}
+.beer-desc{margin-top:1rem;font-size:.9rem;line-height:1.8;color:#43331c;background:var(--cream2);padding:.85rem;border-radius:4px;border:1px dashed #cdb88c}
 
-/* GALLERY = evidence wall on cork */
-.band.gallery{background:var(--wall);background-image:
-  radial-gradient(circle at 20% 30%, rgba(80,52,24,.18) 0 1.5px, transparent 2.5px),
-  radial-gradient(circle at 70% 60%, rgba(110,72,34,.14) 0 1.5px, transparent 2.5px);
-  background-size:24px 24px,30px 28px;
-  border-top:10px solid #5b4427;border-bottom:10px solid #5b4427;box-shadow:inset 0 0 80px rgba(0,0,0,.25)}
-.gallery-head{text-align:center;padding:4rem 1.1rem 1.4rem}
-.gallery-head .sec-title{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.4)}
-.gallery-head .sub{font-family:var(--mono);color:#fbeccb;font-size:.95rem;margin-top:.4rem}
+/* GALLERY — prints on the bar wall */
+.band.gallery{padding-bottom:1rem;box-shadow:inset 0 30px 50px -30px rgba(0,0,0,.6),inset 0 -30px 50px -30px rgba(0,0,0,.6)}
+.gallery-head{text-align:center;padding:4rem 1.1rem 1.6rem}
+.gallery-head .sec-title{color:var(--cream2);border-bottom-color:var(--gold)}
+.gallery-head .sub{font-family:var(--serif);color:var(--muted);font-size:1rem;margin-top:.7rem;font-style:italic}
 .grid{column-count:3;column-gap:14px;max-width:1000px;margin:0 auto;padding:0 1rem 1rem}
 @media(max-width:760px){.grid{column-count:2}}
-.tile{break-inside:avoid;margin-bottom:18px;position:relative;background:#fff;padding:8px 8px 8px;
-  box-shadow:0 8px 20px rgba(0,0,0,.4);cursor:pointer;border-radius:2px}
-.tile::before{content:'';position:absolute;top:-7px;inset-inline-start:50%;transform:translateX(50%);
-  width:15px;height:15px;border-radius:50%;z-index:6;
-  background:radial-gradient(circle at 35% 28%, #ff7a6e, var(--red) 58%, var(--red-d));box-shadow:0 3px 5px rgba(0,0,0,.45)}
-.tile:nth-child(3n)::before{background:radial-gradient(circle at 35% 28%, #7fb0ee, var(--blue) 58%, #163a6b)}
-.tile:nth-child(4n)::before{background:radial-gradient(circle at 35% 28%, #ffe07a, var(--gold) 58%, #8a5e10)}
-.tile img,.tile video{width:100%;display:block;border-radius:1px;transition:transform .3s}
-.tile:hover img{transform:scale(1.04)}
-.tile .sticker{position:absolute;bottom:-7px;inset-inline-end:6px;font-family:var(--mono);background:rgba(255,253,246,.9);
-  color:var(--red);font-weight:700;font-size:.72rem;padding:.15rem .5rem;border:2px solid var(--red);border-radius:3px;transform:rotate(-5deg)}
-.tile .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.7);pointer-events:none}
+.tile{break-inside:avoid;margin-bottom:16px;position:relative;background:var(--cream2);padding:7px;border-radius:2px;
+  box-shadow:0 8px 22px rgba(0,0,0,.6);cursor:pointer;border:1px solid #d8c49a}
+.tile img,.tile video{width:100%;display:block;border-radius:1px}    /* aspect-ratio set inline -> no scroll reflow */
+.tile:hover img{filter:brightness(1.05)}
+.tile .sticker{position:absolute;bottom:-9px;inset-inline-end:6px;font-family:var(--serif);font-weight:700;font-size:.72rem;color:#2b1a02;
+  background:linear-gradient(180deg,var(--gold-lt),var(--amber));padding:.16rem .55rem;border-radius:4px;transform:rotate(-5deg);box-shadow:0 4px 10px rgba(0,0,0,.45)}
+.tile .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.8);pointer-events:none}
 
 /* CLOSING */
-.closing{background:#241c12;color:var(--paper);text-align:center;padding:5rem 1.3rem;position:relative}
-.case-closed{display:inline-block;font-family:var(--mono);font-weight:700;font-size:1.1rem;letter-spacing:.1em;
-  color:#ff5a4d;border:3px double #ff5a4d;border-radius:8px;padding:.4rem 1.1rem;transform:rotate(-4deg);margin-bottom:1.6rem;opacity:.92}
-.closing h3{font-family:var(--doc);font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;margin-bottom:1rem}
-.closing p{max-width:520px;margin:0 auto 1.3rem;line-height:1.9;color:#ddd2bf;font-size:1.05rem}
-.closing .heart{font-family:var(--doc);font-size:1.3rem;font-weight:700;color:#fff}
-footer{background:#0f0b06;color:#b39e7d;text-align:center;padding:2.2rem 1rem;font-family:var(--mono);font-size:.78rem;letter-spacing:.03em}
-footer a{color:var(--gold);text-decoration:none}
+.closing{background:linear-gradient(180deg,#1f150a,#120c05);text-align:center;padding:5rem 1.3rem;border-top:2px solid var(--gold)}
+.case-closed{display:inline-block;font-family:var(--serif);font-weight:900;font-size:1.8rem;color:var(--gold-lt);margin-bottom:1.2rem}
+.closing h3{font-family:var(--serif);font-weight:900;font-size:clamp(1.8rem,6vw,2.6rem);margin-bottom:1rem;color:var(--cream2)}
+.closing p{max-width:520px;margin:0 auto 1.2rem;color:#d8c4a0;line-height:1.9;font-size:1.05rem}
+.closing .heart{font-family:var(--serif);font-weight:700;font-size:1.4rem;color:var(--cream2)}
+footer{background:#120c05;color:#a78a5e;text-align:center;padding:2.2rem 1rem;font-family:var(--serif);font-size:.82rem;letter-spacing:.03em}
+footer a{color:var(--gold-lt);text-decoration:none}
 
 /* reveal — fail-safe */
 .reveal{transition:opacity .7s,transform .7s}
@@ -207,12 +189,12 @@ footer a{color:var(--gold);text-decoration:none}
 .js .reveal.vis,.reveal.vis{opacity:1;transform:none}
 
 /* lightbox */
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem}
 #lb.open{display:flex}
-#lb img,#lb video{max-width:96vw;max-height:90vh;border-radius:6px;border:6px solid #fff}
+#lb img,#lb video{max-width:96vw;max-height:90vh;border-radius:6px;border:5px solid var(--cream2)}
 #lb .close{position:fixed;top:1rem;inset-inline-end:1.2rem;color:#fff;font-size:2.4rem;cursor:pointer;font-weight:700}
 
-@media(max-width:500px){nav{gap:.35rem;font-size:.7rem}}
+@media(max-width:500px){nav{gap:.25rem;font-size:.76rem}}
 </style>
 </head>
 <body>
@@ -222,41 +204,37 @@ footer a{color:var(--gold);text-decoration:none}
 <nav>
   <a href="#hero">ראשי</a>
   <a href="#beer">הבירה שלנו</a>
-  <a href="#gallery">לוח הראיות</a>
+  <a href="#gallery">תמונות מביכות</a>
   <a class="real" href="__REAL__" target="_blank" rel="noopener">האתר ה׳אמיתי׳ ↗</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="case paper pin">
-    <span class="guilty">אשם</span>
-    <div class="stamp-top">🔍 תיק חקירה · סודי ביותר</div>
-    <div class="case-no">תיק מס׳ 03·06·26 · מחלקת המלווים</div>
-    <h1 class="hero-title">האתר המתחרה<br>של ה<span class="x">מלווים</span></h1>
-    <p class="testimony">״בטח חבר׳ה, הנה אתר מתחרה ומביך לכבוד החתונה של רוני, בדיוק כמו שביקשתם״<span>— מתוך עדות שמסר קלוד</span></p>
-    <div class="charge">
-      <div class="charge-l">כתב אישום · רוני חייב למלווים</div>
-      <div class="charge-n" id="counter">0</div>
-      <div class="charge-u">בירות 🍺 (ולחלקנו — בפעם השנייה)</div>
-    </div>
+  <div class="badge">🍺 מבשלת החברים מהבית · EST. 2026</div>
+  <h1 class="hero-title">האתר המתחרה<br>של ה<em>חברים מהבית</em></h1>
+  <div class="rule">🌿 ◆ 🍺</div>
+  <p class="hero-sub label" style="display:inline-block">״בטח חבר׳ה, הנה אתר מתחרה ומביך לכבוד החתונה של רוני, בדיוק כמו שביקשתם״ – קלוד</p>
+  <div class="counter-wrap label">
+    <div class="counter-l">רוני חייב לחברים מהבית</div>
+    <div class="counter-n" id="counter">0</div>
+    <div class="counter-u">בירות 🍺</div>
   </div>
   <div class="hero-btns">
-    <a class="btn btn-1" href="#beer">מוצג א׳: הבירה שלנו 🍺<small>GROOMSMEN EVIDENCE</small></a>
-    <a class="btn btn-2" href="#gallery">לוח הראיות 📌<small>תמונות מביכות של רוני</small></a>
+    <a class="btn btn-1" href="#beer">הבירה שלנו 🍺<small>0% רווקות · מהדורה מוגבלת</small></a>
+    <a class="btn btn-2" href="#gallery">תמונות מביכות של רוני 📸<small>״טבעות עץ של החברים מהבית״</small></a>
     <a class="btn btn-real" href="__REAL__" target="_blank" rel="noopener">רגע, איפה האתר ה<em>אמיתי</em>?<small>רוצו לראות את האתר המושקע של הזוג ↗</small></a>
   </div>
-  <div class="scroll-hint">גללו לפתיחת התיק 👇</div>
 </section>
 
 <!-- WHY -->
 <section id="why">
   <div class="wrap">
-    <div class="report paper pin reveal">
-      <span class="sec-tag">תזכיר חקירה</span>
+    <div class="label report reveal">
+      <span class="sec-tag">אז למה בכלל עשינו אתר?</span>
       <h2 class="sec-title">רוני רוני רוני…</h2>
       <div class="lead">
-        <p>בתמימותו (טיפשותו?) שיתף אותנו רוני באתר שהוא ועופרי הכינו לחתונה. כמובן שאנחנו, כמלווים וחברים טובים, החלטנו שהדבר הנכון ביותר הוא לחשוב איך אנחנו משתמשים בזה <b>נגדו</b> (כי רק ככה אנחנו יודעים להביע אהבה).</p>
-        <p>וככה נפתח התיק הזה… <b>״האתר המתחרה של המלווים״</b>.</p>
+        <p>בתמימותו (טיפשותו?) שיתף אותנו רוני באתר שהוא ועופרי הכינו לחתונה. כמובן שאנחנו, החברים מהבית, החלטנו שהדבר הנכון ביותר הוא לחשוב איך אנחנו משתמשים בזה <b>נגדו</b> (כי רק ככה אנחנו יודעים להביע אהבה).</p>
+        <p>וככה נוצר האתר הזה… <b>״האתר המתחרה של החברים מהבית״</b>.</p>
         <p>קודם כל — אם במקרה הגעתם לאתר הזה קודם, מה אתם עושים כאן?? <a href="__REAL__" target="_blank" rel="noopener">רוצו לראות את האתר המושקע של הזוג המאושר ↗</a> ותחזרו. אתם תבינו הרבה יותר עליהם, וגם עלינו.</p>
       </div>
     </div>
@@ -266,52 +244,51 @@ footer a{color:var(--gold);text-decoration:none}
 <!-- STORY -->
 <section id="story">
   <div class="wrap" style="padding-top:0">
-    <div class="report paper reveal">
-      <span class="sec-tag">עדות ראשית</span>
+    <div class="label report reveal">
+      <span class="sec-tag">סיפור ההיכרות מהעיניים שלנו</span>
       <h2 class="sec-title">הבירה הכי קלה שעשינו בחיים</h2>
       <div class="lead">
         <p>רוני הוא בן אדם שכל החיים שלו היה בזוגיות. כשהוא יצא ממערכת היחסים הקודמת שלו, הוא טען בפני כולנו:</p>
       </div>
     </div>
 
-    <div class="chat pin reveal">
-      <span class="stamp">ראיה א׳ 🔍</span>
+    <div class="chat reveal">
       <div class="wa">
         <div class="wa-head">
           <span class="wa-back">‹</span>
           <span class="wa-av">🍍</span>
-          <span class="wa-name">החברים מהבית 🍍<small>רוני, טל, הדר ועוד 8…</small></span>
+          <span class="wa-name">החברים מהבית 🍍<small>רוני, בורגר, אורן, יאיר, טל, קהלני ועוד 6…</small></span>
         </div>
         <div class="wa-body">
           <div class="b them"><span class="who">רוני</span>אתם תראו, עכשיו אני אהיה במשך שנה שלמה רווק<span class="t">22:41</span></div>
           <div class="b them"><span class="who">רוני</span>ואני מוכן להתערב איתכם על בירה שזה קורה 😎<span class="t">22:41</span></div>
-          <div class="b us"><span class="who">טל</span>סגור. בירה. 🍺<span class="t">22:42 ✓✓</span></div>
-          <div class="b us"><span class="who">הדר</span>(זאת הבירה הכי קלה שנעשה בחיים)<span class="t">22:42 ✓✓</span></div>
+          <div class="b us"><span class="who">ניב</span>סגור. בירה. 🍺<span class="t">22:42 ✓✓</span></div>
+          <div class="b us"><span class="who">ניב</span>(זאת הבירה הכי קלה שנעשה בחיים)<span class="t">22:42 ✓✓</span></div>
         </div>
       </div>
     </div>
 
-    <div class="report paper reveal">
+    <div class="label report reveal">
       <div class="lead">
         <p>אבל אתם בטח שואלים את עצמכם איך הזכייה שלנו קרתה בפועל. תודה ששאלתם, זאת שאלה טובה: <b>נסענו לפאנג׳ויה.</b></p>
         <p>אנחנו יודעים איך זה נראה מהצד, ואתם צודקים — מסופ״ש כזה קשה לצאת עם זוגיות, שלא נדבר על חתונה. אבל רוני שלנו מוכשר בזה, והוא מסוגל להכל…</p>
-        <p>רוני היה נחוש לנצח, להיות רווק שנה ולקבל משהו כמו <b>30 בירות</b> בחינם מהחברים. אבל היתה לו נקודת תורפה אחת בתוכנית, וקראו לה <b>עופרי</b>. עוד לפני שהחליף איתה מילה, הרווק ״הנחשק״ הגיע נעול רק על דבר אחד. בלילה של המסיבה השנייה הוא עשה את המוּב — התחלנו לרקוד בסביבתה, רוני לאט-לאט הראה נכונות (האמת, לא כזה לאט), וכמו מלווים טובים ברגע אחד פינינו את השטח. ומשם הכל התחיל.</p>
+        <p>רוני היה נחוש לנצח, להיות רווק שנה ולקבל משהו כמו <b>30 בירות</b> בחינם מהחברים. אבל היתה לו נקודת תורפה אחת בתוכנית, וקראו לה <b>עופרי</b>. עוד לפני שהחליף איתה מילה, הרווק ״הנחשק״ הגיע נעול רק על דבר אחד. בלילה של המסיבה השנייה הוא עשה את המוּב — התחלנו לרקוד בסביבתה, רוני לאט-לאט הראה נכונות (האמת, לא כזה לאט), וכמו חברים טובים ברגע אחד פינינו את השטח. ומשם הכל התחיל.</p>
         <p>ואז גילינו שיש <b>תיעוד</b> של האירוע. בתמונות הרשמיות של פאנג׳ויה… והנה, מיותר קרוב:</p>
       </div>
     </div>
 
-    <div class="evidence pin reveal">
-      <span class="stamp">הוכחה 🔍</span>
+    <div class="evidence reveal">
+      <span class="stamp">התיעוד 📸</span>
       <img src="assets/kiss.jpg" alt="התיעוד">
-      <span class="cap">מזל טוב רוני על התיעוד</span>
+      <span class="cap">מזל טוב רוני על התיעוד 🎉</span>
     </div>
 
-    <div class="evidence pin blue reveal">
-      <span class="stamp">ראיה ב׳</span>
+    <div class="evidence reveal">
+      <span class="stamp">זה ניצחון! 🍺</span>
       <img src="assets/evidence-chat.jpg" alt="שיחת הוואטסאפ">
     </div>
 
-    <div class="report paper reveal">
+    <div class="label report reveal">
       <div class="lead">
         <p>מכאן זה רק התדרדר. הם עברו לגור יחד אחרי חודשיים, התארסו, עברו עוד דירה, הביאו כלבה… והנה אנחנו כאן היום, מתרגשים יחד איתם בחתונה! (למרות שבתכל׳ס באנו לקבל את הבירה שמגיעה לנו.)</p>
       </div>
@@ -320,13 +297,13 @@ footer a{color:var(--gold);text-decoration:none}
 </section>
 
 <!-- BEER -->
-<div class="band beer">
+<div class="band beer" id="beer">
   <div class="wrap">
-    <span class="sec-tag">מוצג א׳</span>
-    <h2 class="sec-title">לא רק לכלה ולחתן מותר</h2>
-    <p class="lead reveal" style="max-width:520px;margin:0 auto">לכבוד הערב המרגש החלטנו שגם למלווים מגיעה בירה. אז הרשו לנו להגיש את המוצג המרכזי בתיק:</p>
-    <div class="beer-card pin reveal">
-      <div class="exhibit-tab">מוצג א׳ · EXHIBIT A · עדות אריזה</div>
+    <span class="sec-tag">הבירה שלנו</span>
+    <h2 class="sec-title" style="color:var(--cream2)">לא רק לכלה ולחתן מותר</h2>
+    <p class="hero-sub label reveal" style="display:block;max-width:520px;margin:0 auto;font-style:normal">לכבוד הערב המרגש החלטנו שגם לחברים מהבית מגיעה בירה. אז הרשו לנו להגיש:</p>
+    <div class="beer-card label reveal">
+      <div class="exhibit-tab">🍺 מבשלת החברים מהבית · מהדורה מוגבלת</div>
       <div class="beer-img-wrap" id="beerTap">
         <img id="beerImg" src="assets/beer-roni.jpg" alt="רוני 0%">
         <span class="beer-tap">לחצו עליי להחלפת תמונה 🍺</span>
@@ -347,7 +324,7 @@ footer a{color:var(--gold);text-decoration:none}
 <!-- GALLERY -->
 <div class="band gallery" id="gallery">
   <div class="gallery-head">
-    <span class="sec-tag">לוח הראיות</span>
+    <span class="sec-tag">טבעות עץ של החברים מהבית</span>
     <h2 class="sec-title">טבעות עץ לשולחן</h2>
     <p class="sub">(סתם. זה מלא תמונות מביכות של רוני 🤫)</p>
   </div>
@@ -356,7 +333,7 @@ footer a{color:var(--gold);text-decoration:none}
 
 <!-- CLOSING -->
 <div class="closing">
-  <div class="case-closed">התיק נסגר 🔒</div>
+  <div class="case-closed">לחיים! 🍻</div>
   <h3>סליחה עופרי ורוני 🙈</h3>
   <p>אתם יודעים שלא יכולנו אחרת — אנחנו אוהבים אתכם יותר מדי.</p>
   <p class="heart">החברים מהבית ❤️</p>
@@ -364,7 +341,7 @@ footer a{color:var(--gold);text-decoration:none}
 </div>
 
 <footer>
-  תיק חקירה: רוני · האתר המתחרה של המלווים · 03·06·26 · ❤️ · <a href="__REAL__" target="_blank" rel="noopener">האתר הרשמי</a>
+  רוני ועופרי · האתר המתחרה של החברים מהבית · 3.6.2026 · ❤️ · <a href="__REAL__" target="_blank" rel="noopener">האתר הרשמי</a>
 </footer>
 
 <div id="lb"><span class="close">×</span></div>
@@ -372,24 +349,24 @@ footer a{color:var(--gold);text-decoration:none}
 <script>
 document.documentElement.classList.add('js');
 const GALLERY=__GALLERY__, BEER=__BEER__, VIDEOS=__VIDS__;
-const STICKERS=['הפסיד!','מוצג ב׳','חשוד','0% רווקות','ראיה','אשם','תיעוד','מבוקש','הוכחה'];
+const STICKERS=['אלוף 🏆','החתן','0% רווקות','לחיים 🍻','מה הפרצוף','חתיך','🍺','הפסיד!','מבוקש'];
 
-/* counter */
+/* counter count-up */
 (function(){const el=document.getElementById('counter');const target=30;let n=0;
  const step=()=>{n++;el.textContent=n;if(n<target)setTimeout(step,55);};
  new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){step();o.disconnect();}})},{threshold:.4}).observe(el);})();
 
-/* gallery */
+/* gallery — aspect-ratio reserves space so nothing jumps while scrolling */
 (function(){const grid=document.getElementById('grid');
  VIDEOS.forEach((v,i)=>{const t=document.createElement('div');t.className='tile';
    t.style.transform='rotate('+((i%2?1:-1)*1.4)+'deg)';
-   t.innerHTML='<video src="'+v.src+'" poster="'+v.poster+'" muted loop playsinline preload="none"></video><span class="play">▶</span>';
+   t.innerHTML='<video style="aspect-ratio:'+v.w+'/'+v.h+'" src="'+v.src+'" poster="'+v.poster+'" muted loop playsinline preload="none"></video><span class="play">▶</span>';
    t.onclick=()=>openLB('video',v.src);grid.appendChild(t);});
- GALLERY.forEach((src,i)=>{const t=document.createElement('div');t.className='tile';
+ GALLERY.forEach((g,i)=>{const t=document.createElement('div');t.className='tile';
    t.style.transform='rotate('+((i%5-2)*1.1)+'deg)';
    let s=(i%4===0)?'<span class="sticker">'+STICKERS[i%STICKERS.length]+'</span>':'';
-   t.innerHTML='<img loading="lazy" src="'+src+'" alt="ראיה">'+s;
-   t.onclick=()=>openLB('img',src);grid.appendChild(t);});})();
+   t.innerHTML='<img style="aspect-ratio:'+g.w+'/'+g.h+'" loading="lazy" src="'+g.s+'" alt="רוני">'+s;
+   t.onclick=()=>openLB('img',g.s);grid.appendChild(t);});})();
 
 /* lightbox */
 const lb=document.getElementById('lb');
@@ -398,25 +375,25 @@ function openLB(type,src){[...lb.querySelectorAll('img,video')].forEach(e=>e.rem
  if(type==='video'){el.controls=true;el.autoplay=true;el.playsInline=true;}lb.appendChild(el);lb.classList.add('open');}
 lb.onclick=e=>{if(e.target===lb||e.target.classList.contains('close'))lb.classList.remove('open');};
 
-/* beer cycle */
+/* beer tap cycle */
 (function(){let i=0;const img=document.getElementById('beerImg');
  document.getElementById('beerTap').onclick=()=>{i=(i+1)%BEER.length;img.src=BEER[i];};})();
 
-/* reveal */
+/* reveal on scroll */
 const ro=new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');o.unobserve(e.target);}})},{threshold:.08});
 document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
 
-/* floaties */
-(function(){const layer=document.getElementById('floaties');const em=['🔍','📌','📎','🧵','🍺','📸','🗂️'];
+/* floating beer emojis */
+(function(){const layer=document.getElementById('floaties');const em=['🍺','🍻','🌿','🌾','🥨','😎'];
  for(let i=0;i<13;i++){const s=document.createElement('div');s.className='floaty';s.textContent=em[i%em.length];
-  s.style.left=(i*8%100)+'%';s.style.animationDuration=(13+i%8)+'s';s.style.animationDelay=(-i*1.6)+'s';
+  s.style.left=(i*8%100)+'%';s.style.animationDuration=(14+i%8)+'s';s.style.animationDelay=(-i*1.7)+'s';
   s.style.fontSize=(1.1+(i%4)*0.45)+'rem';layer.appendChild(s);}})();
 
-/* confetti */
-(function(){const c=document.getElementById('confetti');const em=['🔍','📌','🍺','📸','🧵','📎'];
- for(let i=0;i<36;i++){const s=document.createElement('div');s.className='conf';s.textContent=em[i%em.length];
+/* confetti burst on load */
+(function(){const c=document.getElementById('confetti');const em=['🍺','🍻','🌿','🥂','🌾'];
+ for(let i=0;i<34;i++){const s=document.createElement('div');s.className='conf';s.textContent=em[i%em.length];
   s.style.left=((i*53)%100)+'%';s.style.top='-10%';
-  const dur=2.5+(i%10)*0.25, delay=(i%12)*0.06;
+  const dur=2.6+(i%10)*0.25, delay=(i%12)*0.06;
   s.animate([{transform:'translateY(-10vh) rotate(0)',opacity:1},{transform:'translateY(110vh) rotate('+(360+i*20)+'deg)',opacity:.9}],
    {duration:dur*1000,delay:delay*1000,easing:'cubic-bezier(.3,.6,.5,1)'}).onfinish=()=>s.remove();
   c.appendChild(s);}})();
