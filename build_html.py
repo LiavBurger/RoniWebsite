@@ -131,6 +131,9 @@ section,.band{position:relative;z-index:2}
 .stamp{position:absolute;top:-13px;inset-inline-start:-8px;font-family:var(--serif);font-weight:700;font-size:.82rem;color:#2b1a02;
   background:linear-gradient(180deg,var(--gold-lt),var(--amber));padding:.28rem .7rem;border-radius:4px;transform:rotate(-9deg);
   box-shadow:0 6px 14px rgba(0,0,0,.45);z-index:7}
+/* story heading on the wood (between text boxes and photos) */
+.story-title{font-family:var(--serif);font-weight:900;color:var(--cream2);text-align:center;max-width:640px;
+  margin:3rem auto 1.6rem;padding:0 1.2rem;font-size:clamp(1.4rem,5.5vw,2.1rem);line-height:1.35;text-shadow:0 2px 0 rgba(0,0,0,.4)}
 
 /* BEER - the bottle label */
 .band.beer .wrap{text-align:center}
@@ -252,21 +255,17 @@ footer a{color:var(--gold-lt);text-decoration:none}
     <div class="label report reveal">
       <div class="lead">
         <p>אבל אתם בטח שואלים את עצמכם איך הזכייה שלנו קרתה בפועל. תודה ששאלתם, זאת שאלה טובה: <b>נסענו לפאנג׳ויה.</b></p>
-        <p>אנחנו יודעים איך זה נראה מהצד, ואתם צודקים - מסופ״ש כזה קשה לצאת עם זוגיות, שלא נדבר על חתונה. אבל רוני שלנו מוכשר בזה, והוא מסוגל להכל…</p>
         <img class="inbox-img" src="assets/funjoya.jpg" alt="פאנג׳ויה" onclick="openLB('img','assets/funjoya.jpg')">
+        <p>אנחנו יודעים איך זה נראה מהצד, ואתם צודקים - מסופ״ש כזה קשה לצאת עם זוגיות, שלא נדבר על חתונה. אבל רוני שלנו מוכשר בזה, והוא מסוגל להכל…</p>
         <p>רוני היה נחוש לנצח, להיות רווק שנה ולקבל משהו כמו <b>30 בירות</b> בחינם מהחברים. אבל היתה לו נקודת תורפה אחת בתוכנית, וקראו לה <b>עופרי</b>. עוד לפני שהחליף איתה מילה, הרווק ״הנחשק״ הגיע נעול רק על דבר אחד. בלילה של המסיבה השנייה הוא עשה את המוּב - התחלנו לרקוד בסביבתה, רוני לאט-לאט הראה נכונות (האמת, לא כזה לאט), וכמו חברים טובים ברגע אחד פינינו את השטח. ומשם הכל התחיל.</p>
-        <p>ואז גילינו שיש <b>תיעוד</b> של האירוע. בתמונות הרשמיות של פאנג׳ויה… והנה, מיותר קרוב:</p>
       </div>
     </div>
 
-    <div class="evidence reveal">
-      <img src="assets/evidence-chat.jpg" alt="שיחת הוואטסאפ">
-    </div>
+    <h3 class="story-title reveal">ואז גילינו שיש תיעוד של האירוע. בתמונות הרשמיות של פאנג׳ויה…</h3>
 
     <div class="evidence reveal">
       <span class="stamp">התיעוד 📸</span>
       <img src="assets/kiss.jpg" alt="התיעוד">
-      <span class="cap">מזל טוב רוני על התיעוד 🎉</span>
     </div>
 
     <div class="label report reveal">
@@ -278,6 +277,13 @@ footer a{color:var(--gold-lt);text-decoration:none}
     <div class="chat reveal" style="transform:rotate(1.2deg)">
       <img class="chat-shot" src="assets/proof.jpg" alt="MasterPlan" onclick="openLB('img','assets/proof.jpg')">
       <div class="masterplan">MasterPlan</div>
+    </div>
+
+    <div class="label report reveal">
+      <div class="lead">
+        <p>בהקלטה רוני חופר במשך 3 דקות על כמה עופרי מדהימה, איך הוא ידע ״מהשנייה הראשונה״, ועל התוכנית המושלמת שלו להישאר רווק (שהחזיקה, נזכיר, חמישה חודשים).</p>
+        <p>מי שמכיר את רוני באמת יודע כמה הוא חופר בהקלטות - הרבה זמן, קצת מילים. במקרה הזה חסכנו את זה מכם. 🎙️</p>
+      </div>
     </div>
 
     <div class="label report reveal">
@@ -297,9 +303,9 @@ footer a{color:var(--gold-lt);text-decoration:none}
     <div class="beer-grid">
       <div class="beer-card label reveal">
         <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
-        <div class="beer-img-wrap" id="beerTap">
-          <img id="beerImg" src="assets/beer-roni.jpg" alt="רוני 0%">
-          <span class="beer-tap">לחצו עליי להחלפת תמונה 🍺</span>
+        <div class="beer-img-wrap" onclick="openLB('img','assets/beer-roni.jpg')">
+          <img src="assets/beer-roni.jpg" alt="רוני 0%">
+          <span class="beer-tap">לחצו להגדלה 🔍</span>
         </div>
         <div class="beer-info">
           <div class="beer-name">רוני 0%</div>
@@ -418,10 +424,6 @@ function openLB(type,src){[...lb.querySelectorAll('img,video')].forEach(e=>e.rem
  const el=document.createElement(type==='video'?'video':'img');el.src=src;
  if(type==='video'){el.controls=true;el.autoplay=true;el.playsInline=true;}lb.appendChild(el);lb.classList.add('open');}
 lb.onclick=e=>{if(e.target===lb||e.target.classList.contains('close'))lb.classList.remove('open');};
-
-/* beer tap cycle */
-(function(){let i=0;const img=document.getElementById('beerImg');
- document.getElementById('beerTap').onclick=()=>{i=(i+1)%BEER.length;img.src=BEER[i];};})();
 
 /* reveal on scroll */
 const ro=new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');o.unobserve(e.target);}})},{threshold:.08});

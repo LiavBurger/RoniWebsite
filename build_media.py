@@ -42,7 +42,7 @@ def save_jpg(src, dst, maxedge=MAXEDGE, q=Q, bg=(255, 255, 255)):
 PICKS = {
     "kiss.jpg":          f"{DOCX}/image2.jpg",                              # the Funjoya kiss = evidence
     "evidence-chat.jpg": f"{DOCX}/image1.jpg",                              # whatsapp "זה ניצחון"
-    "beer-roni.jpg":     f"{DOCX}/image5.png",                             # Roni's face on the BOCK card (default beer)
+    "beer-roni.jpg":     f"{MEDIA}/beers/Gemini_Generated_Image_7czjkf7czjkf7czj.png",  # new "רוני 0%" label
     "chat-group.jpg":    f"{MEDIA}/Screenshot_20200121-170524_WhatsApp.jpg",
     "chat-insta.jpg":    f"{MEDIA}/Screenshot_20220421-205815_Instagram.jpg",
     # real chat screenshot (replaces the generated WhatsApp block in the story)
