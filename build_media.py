@@ -109,14 +109,24 @@ if FF:
                          "poster": f"assets/{os.path.basename(poster)}"})
             print(f"  VIDEO {base}: poster+mp4 ({os.path.getsize(webm)//1024}KB)")
 
-# ---- 4. Gallery sweep: everything in media/ that's an image, minus the named picks' sources ----
+# ---- 4. Gallery sweep ----
+# Preferred model: drop the embarrassing photos in media/gallery/ -> ONLY those become the gallery.
+# Fallback (legacy): if media/gallery/ is missing/empty, sweep top-level media/ minus the named picks.
 used_sources = set(os.path.basename(s) for s in PICKS.values()) | set(os.path.basename(s) for s in WORST)
 exts = (".jpg",".jpeg",".png",".JPG",".JPEG",".PNG")
+GAL_SRC = os.path.join(MEDIA, "gallery")
+gallery_srcs = sorted(f for f in glob.glob(f"{GAL_SRC}/*") if f.endswith(exts))
+if gallery_srcs:
+    print(f"  gallery source: media/gallery/  ({len(gallery_srcs)} files)")
+else:
+    gallery_srcs = [f for f in sorted(glob.glob(f"{MEDIA}/*"))
+                    if f.endswith(exts) and os.path.basename(f) not in used_sources]
+    print(f"  gallery source: media/ top-level (legacy, {len(gallery_srcs)} files)")
+# wipe old gNN.jpg so the gallery is a clean replacement, not an append
+for old in glob.glob(os.path.join(GAL, "g*.jpg")): os.remove(old)
 gal_files = []
 idx = 0
-for f in sorted(glob.glob(f"{MEDIA}/*")):
-    if not f.endswith(exts): continue
-    if os.path.basename(f) in used_sources: continue
+for f in gallery_srcs:
     idx += 1
     n = f"g{idx:02d}.jpg"
     try:
