@@ -21,10 +21,16 @@ for d in (OUT, GAL): os.makedirs(d, exist_ok=True)
 MAXEDGE = 1280
 Q = 80
 
-def save_jpg(src, dst, maxedge=MAXEDGE, q=Q):
+def save_jpg(src, dst, maxedge=MAXEDGE, q=Q, bg=(255, 255, 255)):
     im = Image.open(src)
     im = ImageOps.exif_transpose(im)          # honor phone rotation
-    im = im.convert("RGB")
+    if im.mode in ("RGBA", "LA", "P"):        # flatten transparency onto a solid bg (PNG labels)
+        im = im.convert("RGBA")
+        canvas = Image.new("RGB", im.size, bg)
+        canvas.paste(im, mask=im.split()[-1])
+        im = canvas
+    else:
+        im = im.convert("RGB")
     im.thumbnail((maxedge, maxedge*3), Image.LANCZOS)  # long edge cap, allow tall portraits
     if max(im.size) > maxedge:
         # cap the longest edge precisely
@@ -39,6 +45,16 @@ PICKS = {
     "beer-roni.jpg":     f"{DOCX}/image5.png",                             # Roni's face on the BOCK card (default beer)
     "chat-group.jpg":    f"{MEDIA}/Screenshot_20200121-170524_WhatsApp.jpg",
     "chat-insta.jpg":    f"{MEDIA}/Screenshot_20220421-205815_Instagram.jpg",
+    # real chat screenshot (replaces the generated WhatsApp block in the story)
+    "chat-real.jpg":     f"{MEDIA}/whatsapp_chat/WhatsApp Image 2026-06-02 at 22.27.13.jpeg",
+    # "MasterPlan" proof-of-plan screenshot (new section before the closing story box)
+    "proof.jpg":         f"{MEDIA}/proof_of_plan/WhatsApp Image 2026-06-01 at 10.01.22.jpeg",
+    # Funjoya trip collage (inside the פאנג׳ויה story box)
+    "funjoya.jpg":       f"{MEDIA}/funjoya/20260531_234541-COLLAGE.jpg",
+    # 3 extra beer labels (Roni+Niv, Roni+Ofri, Roni solo)
+    "beer-niv.jpg":      f"{MEDIA}/beers/Gemini_Generated_Image_qovezbqovezbqove.png",
+    "beer-ofri.jpg":     f"{MEDIA}/beers/Gemini_Generated_Image_d4c99ed4c99ed4c9.png",
+    "beer-solo.jpg":     f"{MEDIA}/beers/Gemini_Generated_Image_6pt01q6pt01q6pt0.png",
 }
 for name, src in PICKS.items():
     if os.path.exists(src):

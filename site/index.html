@@ -32,7 +32,7 @@ body{font-family:var(--sans);color:var(--cream);background-color:var(--wood);ove
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:9999}
 .conf{position:absolute;font-size:1.4rem;will-change:transform,opacity}
 
-/* NAV — brass bar rail */
+/* NAV - brass bar rail */
 nav{position:fixed;top:0;inset-inline:0;z-index:100;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;
   padding:.7rem 1rem;background:rgba(23,15,7,.92);backdrop-filter:blur(8px);border-bottom:2px solid var(--gold)}
 nav a{font-family:var(--serif);font-weight:700;font-size:.86rem;text-decoration:none;color:var(--cream);
@@ -87,25 +87,17 @@ section,.band{position:relative;z-index:2}
 .lead a{color:var(--brown);font-weight:700}
 .lead b{color:var(--ink)}
 
-/* CHAT — real WhatsApp (kept), framed as a phone screenshot on the bar */
-.chat{max-width:390px;margin:1rem auto 1.8rem;position:relative;transform:rotate(-1.5deg)}
-.wa{background:#ECE5DD;border-radius:16px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.6);border:6px solid #fbf6ea}
-.wa-head{display:flex;align-items:center;gap:.55rem;background:#075E54;color:#fff;padding:.6rem .8rem}
-.wa-back{font-size:1.5rem;line-height:1;opacity:.9}
-.wa-av{width:38px;height:38px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
-.wa-name{font-weight:700;font-size:.98rem;line-height:1.2;display:flex;flex-direction:column;color:#fff}
-.wa-name small{font-weight:400;font-size:.72rem;opacity:.82}
-.wa-body{padding:.9rem .8rem;display:flex;flex-direction:column;gap:.4rem;background-color:#ECE5DD;
-  background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:18px 18px}
-.b{max-width:84%;padding:.42rem .7rem .5rem;border-radius:10px;font-size:.92rem;line-height:1.45;color:#111;
-  box-shadow:0 1px .5px rgba(0,0,0,.13);position:relative}
-.b .who{display:block;font-size:.74rem;font-weight:700;margin-bottom:.05rem;color:#d9534f}
-.b .t{display:block;text-align:left;font-size:.62rem;color:#667781;margin-top:.12rem}
-.b.them{background:#fff;align-self:flex-start;border-top-right-radius:2px}
-.b.us{background:#dcf8c6;align-self:flex-end;border-top-left-radius:2px}
-.b.us .who{color:#1f7a5a}
+/* CHAT / PROOF - real phone screenshots, framed as prints on the bar */
+.chat{max-width:390px;margin:1rem auto 1.8rem;position:relative;text-align:center;transform:rotate(-1.5deg)}
+.chat-shot{width:100%;display:block;border-radius:16px;border:6px solid #fbf6ea;
+  box-shadow:0 18px 46px rgba(0,0,0,.6);cursor:pointer}
+.masterplan{display:inline-block;font-family:var(--serif);font-weight:900;letter-spacing:.14em;font-size:1.15rem;
+  color:var(--gold-lt);margin-top:.9rem;text-shadow:0 2px 0 rgba(0,0,0,.4)}
+/* image dropped inside a story label box */
+.inbox-img{width:100%;display:block;border-radius:6px;margin:1.2rem 0 .3rem;cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.35);border:1px solid #d8c49a}
 
-/* PHOTO — cream-framed bar prints */
+/* PHOTO - cream-framed bar prints */
 .evidence{margin:2.2rem auto;max-width:400px;background:var(--cream2);padding:.7rem .7rem 2.4rem;border-radius:3px;
   box-shadow:0 16px 42px rgba(0,0,0,.6);transform:rotate(-2.5deg);position:relative;border:1px solid #d8c49a}
 .evidence:nth-of-type(even){transform:rotate(2deg)}
@@ -115,7 +107,7 @@ section,.band{position:relative;z-index:2}
   background:linear-gradient(180deg,var(--gold-lt),var(--amber));padding:.28rem .7rem;border-radius:4px;transform:rotate(-9deg);
   box-shadow:0 6px 14px rgba(0,0,0,.45);z-index:7}
 
-/* BEER — the bottle label */
+/* BEER - the bottle label */
 .band.beer .wrap{text-align:center}
 .beer-card{max-width:360px;margin:2rem auto 0;border-radius:6px;overflow:hidden;border:1px solid #d8c49a;
   box-shadow:0 20px 50px rgba(0,0,0,.6)}
@@ -133,8 +125,10 @@ section,.band{position:relative;z-index:2}
 .beer-d{display:flex;gap:.5rem;font-size:.9rem;line-height:1.5;margin-bottom:.5rem;border-top:1px dashed #cdb88c;padding-top:.5rem;color:#43331c}
 .beer-d b{min-width:3rem;font-family:var(--serif);color:var(--brown)}
 .beer-desc{margin-top:1rem;font-size:.9rem;line-height:1.8;color:#43331c;background:var(--cream2);padding:.85rem;border-radius:4px;border:1px dashed #cdb88c}
+.beer-grid{display:flex;flex-wrap:wrap;gap:1.8rem;justify-content:center;align-items:flex-start;margin-top:2rem}
+.beer-grid .beer-card{margin:0;flex:1 1 320px;max-width:360px}
 
-/* GALLERY — prints on the bar wall */
+/* GALLERY - prints on the bar wall */
 .band.gallery{padding-bottom:1rem;box-shadow:inset 0 30px 50px -30px rgba(0,0,0,.6),inset 0 -30px 50px -30px rgba(0,0,0,.6)}
 .gallery-head{text-align:center;padding:4rem 1.1rem 1.6rem}
 .gallery-head .sec-title{color:var(--cream2);border-bottom-color:var(--gold)}
@@ -158,7 +152,7 @@ section,.band{position:relative;z-index:2}
 footer{background:#120c05;color:#a78a5e;text-align:center;padding:2.2rem 1rem;font-family:var(--serif);font-size:.82rem;letter-spacing:.03em}
 footer a{color:var(--gold-lt);text-decoration:none}
 
-/* reveal — fail-safe */
+/* reveal - fail-safe */
 .reveal{transition:opacity .7s,transform .7s}
 .js .reveal{opacity:0;transform:translateY(28px)}
 .js .reveal.vis,.reveal.vis{opacity:1;transform:none}
@@ -189,13 +183,13 @@ footer a{color:var(--gold-lt);text-decoration:none}
   <div class="rule">🌿 ◆ 🍺</div>
   <p class="hero-sub label" style="display:inline-block">״בטח חבר׳ה, הנה אתר מתחרה ומביך לכבוד החתונה של רוני, בדיוק כמו שביקשתם״ – קלוד</p>
   <div class="counter-wrap label">
-    <div class="counter-l">רוני חייב לחברים מהבית</div>
+    <div class="counter-l">רוני חייב לחברים</div>
     <div class="counter-n" id="counter">0</div>
     <div class="counter-u">בירות 🍺</div>
   </div>
   <div class="hero-btns">
     <a class="btn btn-1" href="#beer">הבירה שלנו 🍺<small>0% רווקות · מהדורה מוגבלת</small></a>
-    <a class="btn btn-2" href="#gallery">תמונות מביכות של רוני 📸<small>״טבעות עץ של החברים מהבית״</small></a>
+    <a class="btn btn-2" href="#gallery">תמונות מביכות של רוני 📸<small>״זרי פרחים מתנה מהחברים״</small></a>
     <a class="btn btn-real" href="https://berco-roni.github.io/wedding-event/" target="_blank" rel="noopener">רגע, איפה האתר ה<em>אמיתי</em>?<small>רוצו לראות את האתר המושקע של הזוג ↗</small></a>
   </div>
 </section>
@@ -209,7 +203,7 @@ footer a{color:var(--gold-lt);text-decoration:none}
       <div class="lead">
         <p>בתמימותו (טיפשותו?) שיתף אותנו רוני באתר שהוא ועופרי הכינו לחתונה. כמובן שאנחנו, החברים מהבית, החלטנו שהדבר הנכון ביותר הוא לחשוב איך אנחנו משתמשים בזה <b>נגדו</b> (כי רק ככה אנחנו יודעים להביע אהבה).</p>
         <p>וככה נוצר האתר הזה… <b>״האתר המתחרה של החברים מהבית״</b>.</p>
-        <p>קודם כל — אם במקרה הגעתם לאתר הזה קודם, מה אתם עושים כאן?? <a href="https://berco-roni.github.io/wedding-event/" target="_blank" rel="noopener">רוצו לראות את האתר המושקע של הזוג המאושר ↗</a> ותחזרו. אתם תבינו הרבה יותר עליהם, וגם עלינו.</p>
+        <p>קודם כל - אם במקרה הגעתם לאתר הזה קודם, מה אתם עושים כאן?? <a href="https://berco-roni.github.io/wedding-event/" target="_blank" rel="noopener">רוצו לראות את האתר המושקע של הזוג המאושר ↗</a> ותחזרו. אתם תבינו הרבה יותר עליהם, וגם עלינו.</p>
       </div>
     </div>
   </div>
@@ -227,28 +221,21 @@ footer a{color:var(--gold-lt);text-decoration:none}
     </div>
 
     <div class="chat reveal">
-      <div class="wa">
-        <div class="wa-head">
-          <span class="wa-back">‹</span>
-          <span class="wa-av">🍍</span>
-          <span class="wa-name">החברים מהבית 🍍<small>רוני, בורגר, אורן, יאיר, טל, קהלני ועוד 6…</small></span>
-        </div>
-        <div class="wa-body">
-          <div class="b them"><span class="who">רוני</span>אתם תראו, עכשיו אני אהיה במשך שנה שלמה רווק<span class="t">22:41</span></div>
-          <div class="b them"><span class="who">רוני</span>ואני מוכן להתערב איתכם על בירה שזה קורה 😎<span class="t">22:41</span></div>
-          <div class="b us"><span class="who">ניב</span>סגור. בירה. 🍺<span class="t">22:42 ✓✓</span></div>
-          <div class="b us"><span class="who">ניב</span>(זאת הבירה הכי קלה שנעשה בחיים)<span class="t">22:42 ✓✓</span></div>
-        </div>
-      </div>
+      <img class="chat-shot" src="assets/chat-real.jpg" alt="ההתערבות בקבוצה של החברים מהבית" onclick="openLB('img','assets/chat-real.jpg')">
     </div>
 
     <div class="label report reveal">
       <div class="lead">
         <p>אבל אתם בטח שואלים את עצמכם איך הזכייה שלנו קרתה בפועל. תודה ששאלתם, זאת שאלה טובה: <b>נסענו לפאנג׳ויה.</b></p>
-        <p>אנחנו יודעים איך זה נראה מהצד, ואתם צודקים — מסופ״ש כזה קשה לצאת עם זוגיות, שלא נדבר על חתונה. אבל רוני שלנו מוכשר בזה, והוא מסוגל להכל…</p>
-        <p>רוני היה נחוש לנצח, להיות רווק שנה ולקבל משהו כמו <b>30 בירות</b> בחינם מהחברים. אבל היתה לו נקודת תורפה אחת בתוכנית, וקראו לה <b>עופרי</b>. עוד לפני שהחליף איתה מילה, הרווק ״הנחשק״ הגיע נעול רק על דבר אחד. בלילה של המסיבה השנייה הוא עשה את המוּב — התחלנו לרקוד בסביבתה, רוני לאט-לאט הראה נכונות (האמת, לא כזה לאט), וכמו חברים טובים ברגע אחד פינינו את השטח. ומשם הכל התחיל.</p>
+        <p>אנחנו יודעים איך זה נראה מהצד, ואתם צודקים - מסופ״ש כזה קשה לצאת עם זוגיות, שלא נדבר על חתונה. אבל רוני שלנו מוכשר בזה, והוא מסוגל להכל…</p>
+        <img class="inbox-img" src="assets/funjoya.jpg" alt="פאנג׳ויה" onclick="openLB('img','assets/funjoya.jpg')">
+        <p>רוני היה נחוש לנצח, להיות רווק שנה ולקבל משהו כמו <b>30 בירות</b> בחינם מהחברים. אבל היתה לו נקודת תורפה אחת בתוכנית, וקראו לה <b>עופרי</b>. עוד לפני שהחליף איתה מילה, הרווק ״הנחשק״ הגיע נעול רק על דבר אחד. בלילה של המסיבה השנייה הוא עשה את המוּב - התחלנו לרקוד בסביבתה, רוני לאט-לאט הראה נכונות (האמת, לא כזה לאט), וכמו חברים טובים ברגע אחד פינינו את השטח. ומשם הכל התחיל.</p>
         <p>ואז גילינו שיש <b>תיעוד</b> של האירוע. בתמונות הרשמיות של פאנג׳ויה… והנה, מיותר קרוב:</p>
       </div>
+    </div>
+
+    <div class="evidence reveal">
+      <img src="assets/evidence-chat.jpg" alt="שיחת הוואטסאפ">
     </div>
 
     <div class="evidence reveal">
@@ -257,8 +244,15 @@ footer a{color:var(--gold-lt);text-decoration:none}
       <span class="cap">מזל טוב רוני על התיעוד 🎉</span>
     </div>
 
-    <div class="evidence reveal">
-      <img src="assets/evidence-chat.jpg" alt="שיחת הוואטסאפ">
+    <div class="label report reveal">
+      <div class="lead">
+        <p>כמו שהזכרנו מקודם, רוני הגיע נעול ולהלן ההוכחה:</p>
+      </div>
+    </div>
+
+    <div class="chat reveal" style="transform:rotate(1.2deg)">
+      <img class="chat-shot" src="assets/proof.jpg" alt="MasterPlan" onclick="openLB('img','assets/proof.jpg')">
+      <div class="masterplan">MasterPlan</div>
     </div>
 
     <div class="label report reveal">
@@ -274,21 +268,74 @@ footer a{color:var(--gold-lt);text-decoration:none}
   <div class="wrap">
     <span class="sec-tag">הבירה שלנו</span>
     <h2 class="sec-title" style="color:var(--cream2)">לא רק לכלה ולחתן מותר</h2>
-    <p class="hero-sub label reveal" style="display:block;max-width:520px;margin:0 auto;font-style:normal">לכבוד הערב המרגש החלטנו שגם לחברים מהבית מגיעה בירה. אז הרשו לנו להגיש:</p>
-    <div class="beer-card label reveal">
-      <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
-      <div class="beer-img-wrap" id="beerTap">
-        <img id="beerImg" src="assets/beer-roni.jpg" alt="רוני 0%">
-        <span class="beer-tap">לחצו עליי להחלפת תמונה 🍺</span>
+    <p class="hero-sub label reveal" style="display:block;max-width:520px;margin:0 auto;font-style:normal">לכבוד הערב המרגש החלטנו שגם לחברים מהבית מגיעה בירה. אז הרשו לנו להגיש את הסדרה המלאה:</p>
+    <div class="beer-grid">
+      <div class="beer-card label reveal">
+        <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
+        <div class="beer-img-wrap" id="beerTap">
+          <img id="beerImg" src="assets/beer-roni.jpg" alt="רוני 0%">
+          <span class="beer-tap">לחצו עליי להחלפת תמונה 🍺</span>
+        </div>
+        <div class="beer-info">
+          <div class="beer-name">רוני 0%</div>
+          <div class="beer-row"><span class="beer-style">סגנון: רווק כושל</span><span class="beer-abv">0% רווקות</span></div>
+          <div class="beer-d"><b>שמרים</b><span>תסיסה ארוכה - זוגיות אחרי זוגיות, ללא הפסקה</span></div>
+          <div class="beer-d"><b>מראה</b><span>עכורה, עיניים אדומות, ראש קצף של בושה</span></div>
+          <div class="beer-d"><b>אף</b><span>ארומה של גבר שהבטיח שנה רווקות והחזיק חמישה חודשים</span></div>
+          <div class="beer-d"><b>טעם</b><span>פותח בביטחון עצמי, נסגר בהפסד מוחץ לכל החברים. סיומת: בירה על חשבונו</span></div>
+          <div class="beer-desc">בירת בוטיק נדירה במיוחד - מבושלת מהתערבות אחת קלילה, מותססת חמישה חודשים בלבד עד שפגשה את עופרי וקרסה. מוגשת קרה, עם צד של ״נו אמרנו לכם״. 🍺</div>
+        </div>
       </div>
-      <div class="beer-info">
-        <div class="beer-name">רוני 0%</div>
-        <div class="beer-row"><span class="beer-style">סגנון: רווק כושל</span><span class="beer-abv">0% רווקות</span></div>
-        <div class="beer-d"><b>שמרים</b><span>תסיסה ארוכה — זוגיות אחרי זוגיות, ללא הפסקה</span></div>
-        <div class="beer-d"><b>מראה</b><span>עכורה, עיניים אדומות, ראש קצף של בושה</span></div>
-        <div class="beer-d"><b>אף</b><span>ארומה של גבר שהבטיח שנה רווקות והחזיק חמישה חודשים</span></div>
-        <div class="beer-d"><b>טעם</b><span>פותח בביטחון עצמי, נסגר בהפסד מוחץ לכל החברים. סיומת: בירה על חשבונו</span></div>
-        <div class="beer-desc">בירת בוטיק נדירה במיוחד — מבושלת מהתערבות אחת קלילה, מותססת חמישה חודשים בלבד עד שפגשה את עופרי וקרסה. מוגשת קרה, עם צד של ״נו אמרנו לכם״. 🍺</div>
+
+      <div class="beer-card label reveal">
+        <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
+        <div class="beer-img-wrap" onclick="openLB('img','assets/beer-niv.jpg')">
+          <img src="assets/beer-niv.jpg" alt="ניב בלונד">
+          <span class="beer-tap">לחצו להגדלה 🔍</span>
+        </div>
+        <div class="beer-info">
+          <div class="beer-name">ניב בלונד</div>
+          <div class="beer-row"><span class="beer-style">סגנון: בלונד וינטג׳</span><span class="beer-abv">100% נוסטלגיה</span></div>
+          <div class="beer-d"><b>שמרים</b><span>זן ישן וטוב, בלונד שכבר לא מוציאים היום</span></div>
+          <div class="beer-d"><b>מראה</b><span>בהיר, מבריק, עם קצף שיער זהוב שלא חוזר</span></div>
+          <div class="beer-d"><b>אף</b><span>בירה בניחוח של פעם, ימים יפים שלא יחזרו</span></div>
+          <div class="beer-d"><b>טעם</b><span>פותח כמו חבר ותיק, נסגר ב״נו, מתי גם אתה מתחתן ניב?״</span></div>
+          <div class="beer-desc">בירה בלונדינית קלאסית שכבר לא מוציאים היום. מבושלת על טהרת הזיכרונות מהבית, מוגשת תמיד עם ניב מהצד. 🍺</div>
+        </div>
+      </div>
+
+      <div class="beer-card label reveal">
+        <div class="exhibit-tab">🍺 מהדורת חתונה · החברים מהבית</div>
+        <div class="beer-img-wrap" onclick="openLB('img','assets/beer-ofri.jpg')">
+          <img src="assets/beer-ofri.jpg" alt="רוני ועופרי - מאוהבים 100%">
+          <span class="beer-tap">לחצו להגדלה 🔍</span>
+        </div>
+        <div class="beer-info">
+          <div class="beer-name">מאוהבים 100%</div>
+          <div class="beer-row"><span class="beer-style">סגנון: חיטה ישראלית מאוהבת</span><span class="beer-abv">100% מאוהב</span></div>
+          <div class="beer-d"><b>שמרים</b><span>תסיסה שהתחילה בריקוד באילת ולא נעצרה מאז</span></div>
+          <div class="beer-d"><b>מראה</b><span>עכורה מרוב אהבה, ראש קצף בצבע שמלת כלה</span></div>
+          <div class="beer-d"><b>אף</b><span>ניחוח אילתי מובהק - מסיבה, מלח ים וטיפה של ״איך נפלת בפח״</span></div>
+          <div class="beer-d"><b>טעם</b><span>פותח במסיבה, ממשיך בדירה משותפת אחרי חודשיים, נסגר בחתונה. סיומת ארוכה: לכל החיים</span></div>
+          <div class="beer-desc">בירת החתונה הרשמית של החברים מהבית. מבושלת מאהבה אמיתית (וקצת שמחה לאיד), מוגשת ביום שבו רוני סוף סוף נכנע. מזל טוב 🍻</div>
+        </div>
+      </div>
+
+      <div class="beer-card label reveal">
+        <div class="exhibit-tab">🍺 מהדורה מוגבלת · החברים מהבית</div>
+        <div class="beer-img-wrap" onclick="openLB('img','assets/beer-solo.jpg')">
+          <img src="assets/beer-solo.jpg" alt="רוני סזון">
+          <span class="beer-tap">לחצו להגדלה 🔍</span>
+        </div>
+        <div class="beer-info">
+          <div class="beer-name">רוני סזון</div>
+          <div class="beer-row"><span class="beer-style">סגנון: סזון פרצוף</span><span class="beer-abv">0% מצלמה</span></div>
+          <div class="beer-d"><b>שמרים</b><span>תסיסה פראית, בדיוק כמו הפרצוף בתמונה</span></div>
+          <div class="beer-d"><b>מראה</b><span>מכוערת בנראות אבל ממש טעימה - אל תשפטו לפי התווית</span></div>
+          <div class="beer-d"><b>אף</b><span>ארומה שמזכירה את הרגע שהבין שהפסיד את ההתערבות</span></div>
+          <div class="beer-d"><b>טעם</b><span>סמכו עלינו, זה לא כמו שזה נראה - זה יותר גרוע</span></div>
+          <div class="beer-desc">סזון ניסיוני שנולד מצילום מסך אחד אומלל. מוגש בלי פילטר ובלי בושה. (רוני, אנחנו אוהבים אותך) 🍺</div>
+        </div>
       </div>
     </div>
   </div>
@@ -297,8 +344,8 @@ footer a{color:var(--gold-lt);text-decoration:none}
 <!-- GALLERY -->
 <div class="band gallery" id="gallery">
   <div class="gallery-head">
-    <span class="sec-tag">טבעות עץ של החברים מהבית</span>
-    <h2 class="sec-title">טבעות עץ לשולחן</h2>
+    <span class="sec-tag">מתנה מהחברים מהבית</span>
+    <h2 class="sec-title">זרי פרחים מתנה מהחברים</h2>
     <p class="sub">(סתם. זה מלא תמונות מביכות של רוני 🤫)</p>
   </div>
   <div class="grid" id="grid"></div>
@@ -308,7 +355,7 @@ footer a{color:var(--gold-lt);text-decoration:none}
 <div class="closing">
   <div class="case-closed">לחיים! 🍻</div>
   <h3>סליחה עופרי ורוני 🙈</h3>
-  <p>אתם יודעים שלא יכולנו אחרת — אנחנו אוהבים אתכם יותר מדי.</p>
+  <p>אתם יודעים שלא יכולנו אחרת - אנחנו אוהבים אתכם יותר מדי.</p>
   <p class="heart">החברים מהבית ❤️</p>
   <a class="btn btn-real" style="display:inline-block;max-width:340px;margin:1rem auto 0" href="https://berco-roni.github.io/wedding-event/" target="_blank" rel="noopener">עכשיו לכו לאתר ה<em>אמיתי</em> שלהם ↗</a>
 </div>
@@ -329,7 +376,7 @@ const STICKERS=['אלוף 🏆','החתן','0% רווקות','לחיים 🍻','
  const step=()=>{n++;el.textContent=n;if(n<target)setTimeout(step,55);};
  new IntersectionObserver((es,o)=>{es.forEach(e=>{if(e.isIntersecting){step();o.disconnect();}})},{threshold:.4}).observe(el);})();
 
-/* gallery — aspect-ratio reserves space so nothing jumps while scrolling */
+/* gallery - aspect-ratio reserves space so nothing jumps while scrolling */
 (function(){const grid=document.getElementById('grid');
  VIDEOS.forEach((v,i)=>{const t=document.createElement('div');t.className='tile';
    t.style.transform='rotate('+((i%2?1:-1)*1.4)+'deg)';
