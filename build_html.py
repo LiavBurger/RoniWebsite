@@ -270,9 +270,15 @@ footer a{color:var(--gold-lt);text-decoration:none}
       <img src="assets/kiss.jpg" alt="התיעוד">
     </div>
 
+    <h3 class="story-title reveal">זה יפה והכל, אבל תירגעי עופרי - אותנו הוא נישק הרבה לפני. תמיד הייתה לו נטייה לנשק חפים מפשע...</h3>
+
+    <div class="evidence reveal">
+      <img src="assets/roni-kissing.jpg" alt="רוני מנשק חברים" onclick="openLB('img','assets/roni-kissing.jpg')">
+    </div>
+
     <div class="label report reveal">
       <div class="lead">
-        <p>כמו שהזכרנו מקודם, רוני הגיע נעול ולהלן ההוכחה:</p>
+        <p>בכל מקרה, נחזור לעניינו - רוני הגיע נעול ולהלן ההוכחה:</p>
       </div>
     </div>
 

@@ -51,6 +51,8 @@ PICKS = {
     "proof.jpg":         f"{MEDIA}/proof_of_plan/WhatsApp Image 2026-06-01 at 10.01.22.jpeg",
     # Funjoya trip collage (inside the פאנג׳ויה story box)
     "funjoya.jpg":       f"{MEDIA}/funjoya/20260531_234541-COLLAGE.jpg",
+    # Roni-kissing-friends collage (after the kiss photo, "תירגעי עופרי" beat)
+    "roni-kissing.jpg":  f"{MEDIA}/roni_kissing_friends/20260603_001538-COLLAGE.jpg",
     # 3 extra beer labels (Roni+Niv, Roni+Ofri, Roni solo)
     "beer-niv.jpg":      f"{MEDIA}/beers/Gemini_Generated_Image_qovezbqovezbqove.png",
     "beer-ofri.jpg":     f"{MEDIA}/beers/Gemini_Generated_Image_d4c99ed4c99ed4c9.png",
