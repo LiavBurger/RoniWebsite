@@ -201,7 +201,7 @@ footer a{color:var(--gold-lt);text-decoration:none}
 <nav>
   <a href="#hero">ראשי</a>
   <a href="#beer">הבירה שלנו</a>
-  <a href="#gallery">תמונות מביכות</a>
+  <a href="#gallery">זרי פרחים</a>
   <a class="real" href="__REAL__" target="_blank" rel="noopener">האתר ה׳אמיתי׳ ↗</a>
 </nav>
 
@@ -216,9 +216,9 @@ footer a{color:var(--gold-lt);text-decoration:none}
     <div class="counter-u">בירות 🍺</div>
   </div>
   <div class="hero-btns">
-    <a class="btn btn-1" href="#beer">הבירה שלנו 🍺<small>0% רווקות · מהדורה מוגבלת</small></a>
-    <a class="btn btn-2" href="#gallery">תמונות מביכות של רוני 📸<small>״זרי פרחים מתנה מהחברים״</small></a>
-    <a class="btn btn-real" href="__REAL__" target="_blank" rel="noopener">רגע, איפה האתר ה<em>אמיתי</em>?<small>רוצו לראות את האתר המושקע של הזוג ↗</small></a>
+    <a class="btn btn-1" href="#beer">הבירה שלנו 🍺</a>
+    <a class="btn btn-2" href="#gallery">זרי פרחים מתנה מהחברים</a>
+    <a class="btn btn-real" href="__REAL__" target="_blank" rel="noopener">רגע, איפה האתר ה<em>אמיתי</em>?</a>
   </div>
 </section>
 
@@ -244,7 +244,9 @@ footer a{color:var(--gold-lt);text-decoration:none}
       <span class="sec-tag">סיפור ההיכרות מהעיניים שלנו</span>
       <h2 class="sec-title">הבירה הכי קלה שעשינו בחיים</h2>
       <div class="lead">
-        <p>רוני הוא בן אדם שכל החיים שלו היה בזוגיות. כשהוא יצא ממערכת היחסים הקודמת שלו, הוא טען בפני כולנו:</p>
+        <p>רוני זה בן אדם שלא היה דקה רווק בחיים שלו. עבר מזוגיות ארוכה לזוגיות ארוכה. כשהוא יצא ממערכת היחסים הקודמת שלו, הוא טען בפני כולנו:</p>
+        <p style="font-style:italic;font-weight:500">״אתם תראו, עכשיו אני אהיה במשך שנה שלמה רווק ואני מוכן להתערב איתכם על בירה שזה קורה״</p>
+        <p>אז הבנו שזאת הבירה הכי קלה שנעשה בחיים, והתערבנו איתו.</p>
       </div>
     </div>
 

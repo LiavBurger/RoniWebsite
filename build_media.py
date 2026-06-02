@@ -42,7 +42,7 @@ def save_jpg(src, dst, maxedge=MAXEDGE, q=Q, bg=(255, 255, 255)):
 PICKS = {
     "kiss.jpg":          f"{DOCX}/image2.jpg",                              # the Funjoya kiss = evidence
     "evidence-chat.jpg": f"{DOCX}/image1.jpg",                              # whatsapp "זה ניצחון"
-    "beer-roni.jpg":     f"{MEDIA}/beers/Gemini_Generated_Image_7czjkf7czjkf7czj.png",  # new "רוני 0%" label
+    "beer-roni.jpg":     f"{MEDIA}/beers/Screenshot 2026-06-02 at 23.45.56.png",  # new "רוני 0%" label
     "chat-group.jpg":    f"{MEDIA}/Screenshot_20200121-170524_WhatsApp.jpg",
     "chat-insta.jpg":    f"{MEDIA}/Screenshot_20220421-205815_Instagram.jpg",
     # real chat screenshot (replaces the generated WhatsApp block in the story)
@@ -88,14 +88,29 @@ for h in glob.glob(f"{MEDIA}/*.HEIC") + glob.glob(f"{MEDIA}/*.heic"):
     except Exception as e:
         print("  HEIC FAIL", h, e)
 
+# ---- Gallery source: media/gallery/ is the curated set (photos + videos). ----
+# If it's populated it becomes the SINGLE source for the bottom gallery; else fall back to legacy top-level media/.
+used_sources = set(os.path.basename(s) for s in PICKS.values()) | set(os.path.basename(s) for s in WORST)
+exts = (".jpg",".jpeg",".png",".JPG",".JPEG",".PNG")
+GAL_SRC = os.path.join(MEDIA, "gallery")
+gallery_srcs = sorted(f for f in glob.glob(f"{GAL_SRC}/*") if f.endswith(exts))
+USE_GAL_FOLDER = bool(gallery_srcs)
+if not USE_GAL_FOLDER:
+    gallery_srcs = [f for f in sorted(glob.glob(f"{MEDIA}/*"))
+                    if f.endswith(exts) and os.path.basename(f) not in used_sources]
+VID_SRC = GAL_SRC if USE_GAL_FOLDER else MEDIA
+print(f"  gallery source: {'media/gallery/' if USE_GAL_FOLDER else 'media/ top-level (legacy)'}  ({len(gallery_srcs)} imgs)")
+
 # ---- 3. Videos: extract poster frame (for vetting) + transcode small web mp4 ----
 try:
     import imageio_ffmpeg; FF = imageio_ffmpeg.get_ffmpeg_exe()
 except Exception as e:
     FF = None; print("WARN no ffmpeg:", e)
+for old in glob.glob(os.path.join(OUT, "vid-*.mp4")) + glob.glob(os.path.join(OUT, "vid-*-poster.jpg")):
+    os.remove(old)            # clean replace: drop stale transcodes first
 VIDS = []
 if FF:
-    for v in sorted(glob.glob(f"{MEDIA}/*.mp4")):
+    for v in sorted(glob.glob(f"{VID_SRC}/*.mp4")):
         base = os.path.splitext(os.path.basename(v))[0][:8]
         poster = os.path.join(OUT, f"vid-{base}-poster.jpg")
         webm   = os.path.join(OUT, f"vid-{base}.mp4")
@@ -109,21 +124,8 @@ if FF:
                          "poster": f"assets/{os.path.basename(poster)}"})
             print(f"  VIDEO {base}: poster+mp4 ({os.path.getsize(webm)//1024}KB)")
 
-# ---- 4. Gallery sweep ----
-# Preferred model: drop the embarrassing photos in media/gallery/ -> ONLY those become the gallery.
-# Fallback (legacy): if media/gallery/ is missing/empty, sweep top-level media/ minus the named picks.
-used_sources = set(os.path.basename(s) for s in PICKS.values()) | set(os.path.basename(s) for s in WORST)
-exts = (".jpg",".jpeg",".png",".JPG",".JPEG",".PNG")
-GAL_SRC = os.path.join(MEDIA, "gallery")
-gallery_srcs = sorted(f for f in glob.glob(f"{GAL_SRC}/*") if f.endswith(exts))
-if gallery_srcs:
-    print(f"  gallery source: media/gallery/  ({len(gallery_srcs)} files)")
-else:
-    gallery_srcs = [f for f in sorted(glob.glob(f"{MEDIA}/*"))
-                    if f.endswith(exts) and os.path.basename(f) not in used_sources]
-    print(f"  gallery source: media/ top-level (legacy, {len(gallery_srcs)} files)")
-# wipe old gNN.jpg so the gallery is a clean replacement, not an append
-for old in glob.glob(os.path.join(GAL, "g*.jpg")): os.remove(old)
+# ---- 4. Gallery sweep (uses the source resolved above) ----
+for old in glob.glob(os.path.join(GAL, "g*.jpg")): os.remove(old)   # clean replace, not append
 gal_files = []
 idx = 0
 for f in gallery_srcs:

@@ -47,19 +47,7 @@
     "assets/gallery/g45.jpg",
     "assets/gallery/g46.jpg",
     "assets/gallery/g47.jpg",
-    "assets/gallery/g48.jpg",
-    "assets/gallery/g49.jpg",
-    "assets/gallery/g50.jpg",
-    "assets/gallery/g51.jpg",
-    "assets/gallery/g52.jpg",
-    "assets/gallery/g53.jpg",
-    "assets/gallery/g54.jpg",
-    "assets/gallery/g55.jpg",
-    "assets/gallery/g56.jpg",
-    "assets/gallery/g57.jpg",
-    "assets/gallery/g58.jpg",
-    "assets/gallery/g59.jpg",
-    "assets/gallery/g60.jpg"
+    "assets/gallery/g48.jpg"
   ],
   "beer_cycle": [
     "assets/beer-roni.jpg",
@@ -71,12 +59,8 @@
   ],
   "videos": [
     {
-      "src": "assets/vid-71b49dd6.mp4",
-      "poster": "assets/vid-71b49dd6-poster.jpg"
-    },
-    {
-      "src": "assets/vid-bd1641a5.mp4",
-      "poster": "assets/vid-bd1641a5-poster.jpg"
+      "src": "assets/vid-VID-2017.mp4",
+      "poster": "assets/vid-VID-2017-poster.jpg"
     }
   ]
 }
